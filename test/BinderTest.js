@@ -705,3 +705,14 @@ BinderTest.prototype.testBindingToAnAttributeOfAnArrayElement = function() {
   browserTrigger(input, 'change');
   assertEquals(['foo',{x:'bar'}],x.scope.$get('x1'));
 };
+
+BinderTest.prototype.testBindingToAnAttributeOfAnAttribute = function() {
+  var x = this.compile("<input name='x1.foo.x' type='text'></input>",
+          {x1:{'foo':{x:5}}});
+  x.scope.$eval();
+  var input = x.node;
+  input[0].value = 'bar';
+  x.scope.$eval();
+  browserTrigger(input, 'change');
+  assertEquals({'foo':{x:'bar'}},x.scope.$get('x1'));
+};
