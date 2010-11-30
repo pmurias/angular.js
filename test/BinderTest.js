@@ -672,3 +672,36 @@ BinderTest.prototype.testItShouldUseFormaterForText = function() {
   assertEquals('1, 2, 3', input[0].value);
 };
 
+
+
+BinderTest.prototype.testBindingToAnArrayElement = function() {
+  var x = this.compile("<input name='x1[1]' type='text'></input>",{x1:['foo','foo']});
+  x.scope.$eval();
+  var input = x.node;
+  input[0].value = 'bar';
+  x.scope.$eval();
+  browserTrigger(input, 'change');
+  assertEquals(['foo','bar'],x.scope.$get('x1'));
+};
+
+BinderTest.prototype.testBindingToAnElementofAnArrayAttribute = function() {
+  var x = this.compile("<input name='x1[1].x[0]' type='text'></input>",
+          {x1:['foo',{x:[5]}]});
+  x.scope.$eval();
+  var input = x.node;
+  input[0].value = 'bar';
+  x.scope.$eval();
+  browserTrigger(input, 'change');
+  assertEquals(['foo',{x:['bar']}],x.scope.$get('x1'));
+};
+
+BinderTest.prototype.testBindingToAnAttributeOfAnArrayElement = function() {
+  var x = this.compile("<input name='x1[1].x' type='text'></input>",
+          {x1:['foo',{x:5}]});
+  x.scope.$eval();
+  var input = x.node;
+  input[0].value = 'bar';
+  x.scope.$eval();
+  browserTrigger(input, 'change');
+  assertEquals(['foo',{x:'bar'}],x.scope.$get('x1'));
+};
